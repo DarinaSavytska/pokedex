@@ -25,6 +25,7 @@ export const App: React.FC = () => {
           <Route path="/moves" element={<div>Moves</div>} />
           <Route path="/items" element={<div>Items</div>} />
         </Routes>
+        <div onClick={() => getPokemons()}>Pokemons</div>
       </BrowserRouter>
     </S.Body>
   );
