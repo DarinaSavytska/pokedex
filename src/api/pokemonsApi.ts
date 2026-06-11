@@ -1,0 +1,10 @@
+export const getPokemons = async () => {
+    try {
+        const res = await fetch("https://pokedex-back-cyan.vercel.app/api/pokemon");
+        const data = await res.json();
+        console.log('data', data);
+        return data;
+    } catch (err) {
+        console.error("Error fetching:", err);
+    }
+}

@@ -1,15 +1,14 @@
-import React, { useState, useEffect } from 'react';
-import { getMove } from 'api';
+import React from 'react';
+import { getPokemons as getApiPokemons } from 'api';
 import * as S from './styled';
 import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
 
 export const App: React.FC = () => {
-  const [pokemonNum, setPokemonNum] = useState<number | null>(null);
+  // const [pokemonNum, setPokemonNum] = useState<number | null>(null);
 
-  const getPokemonMoves = () => {
-    if (pokemonNum !== null) {
-      getMove(pokemonNum).then(data => console.log(data));
-    }
+  const getPokemons = async () => {
+    const pokemons = await getApiPokemons();
+    console.log('pokemons', pokemons);
   };
 
   return (
@@ -22,7 +21,7 @@ export const App: React.FC = () => {
         </nav>
 
         <Routes>
-          <Route path="/" element={<div>Pokemons</div>} />
+          <Route path="/" element={<div onClick={() => getPokemons()}>Pokemons</div>} />
           <Route path="/moves" element={<div>Moves</div>} />
           <Route path="/items" element={<div>Items</div>} />
         </Routes>
