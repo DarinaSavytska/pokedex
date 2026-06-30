@@ -1,8 +1,8 @@
-import styled from "styled-components";
+import { createGlobalStyle } from 'styled-components';
 
-export const Body = styled.body`
-    background-color: lightgray;
-    color: black;
+export const GlobalStyle = createGlobalStyle`
+  body {
     margin: 0;
-    height: 98vh;
-    `;
+    background: lightgray;
+  }
+`;

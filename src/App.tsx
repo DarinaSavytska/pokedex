@@ -1,49 +1,41 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
-import { getPokemons as getApiPokemons } from './api';
-import { Pokemons } from './pages';
+import { BrowserRouter, Link } from 'react-router-dom';
+import { Autorization, Container } from './pages';
+import * as S from './styled';
 
 // max pokemons 1350
 
 export const App: React.FC = () => {
-  const [pokemons, setPokemons] = useState<any[]>([]);
-  const [page, setPage] = useState<number>(0);
+  const [isAuthorized, setAuthorization] = useState<boolean>(false);
+  const [isChangedTab] = useState<boolean>(false); // setIsChangedTab
 
-  const getPokemons = async (page: number) => {
-    const newPokemons = await getApiPokemons(page);
-    setPokemons([...pokemons, ...newPokemons]);
-  };
+  const router = window.location.pathname;
 
   useEffect(() => {
-    getPokemons(page);
-  }, [page]);
+    if (router === '/') {
+      window.location.pathname = '/pokedex';
+    }
+  }, [isAuthorized]);
 
   return (
-    <BrowserRouter>
-      <nav>
-        <Link to="/pokedex" onClick={() => setPokemons([])}>
-          Pokemons
-        </Link>
-        <Link to="/moves" onClick={() => setPokemons([])}>
-          Moves
-        </Link>
-        <Link to="/items" onClick={() => setPokemons([])}>
-          Items
-        </Link>
-      </nav>
-
-      <Routes>
-        <Route
-          path="/pokedex"
-          element={<div onClick={() => setPage(0)}>Pokemons</div>}
-        />
-        <Route path="/moves" element={<div>Moves</div>} />
-        <Route path="/items" element={<div>Items</div>} />
-      </Routes>
-      <Pokemons pokemons={pokemons} />
-      <button type="button" onClick={() => setPage(page + 1)}>
-        Get Pokemons
-      </button>
-    </BrowserRouter>
+    <div>
+      <S.GlobalStyle />
+      {isAuthorized && (
+        <div>
+          <BrowserRouter>
+            <nav>
+              <Link to="/pokedex">Pokemons</Link>
+              <Link to="/moves">Moves</Link>
+              <Link to="/items">Items</Link>
+            </nav>
+            <Container
+              isChangedTab={isChangedTab}
+              isAuthorized={isAuthorized}
+            />
+          </BrowserRouter>
+        </div>
+      )}
+      {!isAuthorized && <Autorization setAuthorization={setAuthorization} />}
+    </div>
   );
 };
