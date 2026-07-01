@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter, Link } from 'react-router-dom';
-import { Autorization, Container } from './pages';
+import { BrowserRouter, Link, Route, Routes } from 'react-router-dom';
+import { Autorization, Pokemons } from './pages';
 import * as S from './styled';
 
 // max pokemons 1350
@@ -28,10 +28,19 @@ export const App: React.FC = () => {
               <Link to="/moves">Moves</Link>
               <Link to="/items">Items</Link>
             </nav>
-            <Container
-              isChangedTab={isChangedTab}
-              isAuthorized={isAuthorized}
-            />
+            <Routes>
+              <Route
+                path="/pokedex"
+                element={
+                  <Pokemons
+                    isAuthorized={isAuthorized}
+                    isChangedTab={isChangedTab}
+                  />
+                }
+              />
+              <Route path="/moves" element={<div>Moves</div>} />
+              <Route path="/items" element={<div>Items</div>} />
+            </Routes>
           </BrowserRouter>
         </div>
       )}

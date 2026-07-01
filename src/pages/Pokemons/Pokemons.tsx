@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getPokemons as getApiPokemons } from '../../api';
 
 interface PokemonsProps {
@@ -6,28 +6,36 @@ interface PokemonsProps {
   isChangedTab: boolean;
 }
 
-export const Pokemons: React.FC<PokemonsProps> = ({
-  isAuthorized,
-  isChangedTab,
-}) => {
+export const Pokemons: React.FC<PokemonsProps> = () => {
+  const ref = useRef<HTMLDivElement>(null);
+  const pageRef = useRef<number>(0);
+  const pokemonsRef = useRef<any[]>([]);
+
   const [pokemons, setPokemons] = useState<any[]>([]);
-  const [page, setPage] = useState<number>(0);
 
   const getPokemons = async (page: number) => {
     const newPokemons = await getApiPokemons(page);
-    setPokemons([...pokemons, ...newPokemons]);
+
+    setPokemons([...pokemonsRef.current, ...newPokemons]);
+    pokemonsRef.current = [...pokemonsRef.current, ...newPokemons];
   };
 
   useEffect(() => {
-    if (isAuthorized) {
-      getPokemons(page);
-    }
-  }, [page, isAuthorized]);
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        getPokemons(pageRef.current);
+        pageRef.current += 1;
+      }
+    });
 
-  useEffect(() => {
-    setPage(0);
-    setPokemons([]);
-  }, [isChangedTab]);
+    if (ref.current) {
+      observer.observe(ref.current);
+    }
+
+    return () => {
+      if (ref.current) observer.unobserve(ref.current);
+    };
+  }, []);
 
   return (
     <div>
@@ -48,9 +56,7 @@ export const Pokemons: React.FC<PokemonsProps> = ({
             </div>
           ))
         : null}
-      <button type="button" onClick={() => setPage(page + 1)}>
-        Get Pokemons
-      </button>
+      <div ref={ref}>load more</div>
     </div>
   );
 };
