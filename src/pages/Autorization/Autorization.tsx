@@ -1,5 +1,9 @@
 import { useState } from 'react';
+// api
+import { getLoginApi } from '../../api';
+// components
 import { Input, Button, ButtonType } from '../../components';
+// styles
 import * as S from './styled';
 
 interface IAutorization {
@@ -15,9 +19,11 @@ export const Autorization: React.FC<IAutorization> = ({ setAuthorization }) => {
     setPassword(e.target.value);
   };
 
-  const onSubmit = () => {
-    setAuthorization(password === 'test');
-    setShowError(password !== 'test');
+  const onSubmit = async () => {
+    const isAuthorized = await getLoginApi(password);
+
+    setAuthorization(isAuthorized.success);
+    setShowError(!isAuthorized.success);
   };
 
   return (

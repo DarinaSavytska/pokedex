@@ -28,19 +28,21 @@ export const App: React.FC = () => {
               <Link to="/moves">Moves</Link>
               <Link to="/items">Items</Link>
             </nav>
-            <Routes>
-              <Route
-                path="/pokedex"
-                element={
-                  <Pokemons
-                    isAuthorized={isAuthorized}
-                    isChangedTab={isChangedTab}
-                  />
-                }
-              />
-              <Route path="/moves" element={<div>Moves</div>} />
-              <Route path="/items" element={<div>Items</div>} />
-            </Routes>
+            <div>
+              <Routes>
+                <Route
+                  path="/pokedex"
+                  element={
+                    <Pokemons
+                      isAuthorized={isAuthorized}
+                      isChangedTab={isChangedTab}
+                    />
+                  }
+                />
+                <Route path="/moves" element={<div>Moves</div>} />
+                <Route path="/items" element={<div>Items</div>} />
+              </Routes>
+            </div>
           </BrowserRouter>
         </div>
       )}
