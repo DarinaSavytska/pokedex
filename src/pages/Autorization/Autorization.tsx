@@ -22,8 +22,8 @@ export const Autorization: React.FC<IAutorization> = ({ setAuthorization }) => {
   const onSubmit = async () => {
     const isAuthorized = await getLoginApi(password);
 
-    setAuthorization(isAuthorized.success);
-    setShowError(!isAuthorized.success);
+    setAuthorization(Boolean(isAuthorized?.success));
+    setShowError(Boolean(!isAuthorized?.success));
   };
 
   return (
