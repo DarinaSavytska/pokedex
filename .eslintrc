@@ -70,6 +70,13 @@
     "quotes": ["error", "single"],
     "no-use-before-define": "off",
     "no-with": "error",
+        "no-param-reassign": [
+      "error",
+      {
+        "props": true,
+        "ignorePropertyModificationsFor": ["state"]
+      }
+    ],
     "object-curly-newline": "off",
     "prefer-destructuring": "off",
     "react-hooks/exhaustive-deps": "off",

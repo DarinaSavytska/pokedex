@@ -1,5 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { getPokemons as getApiPokemons } from '../../api';
+import { useDispatch, useSelector } from 'react-redux';
+import { globalConstants } from '../../constants';
+import * as S from './styled';
+import { AppDispatch, selectors, thunks } from '../../store';
+import { IPokemon } from '../../types';
 
 interface PokemonsProps {
   isAuthorized: boolean;
@@ -9,15 +13,19 @@ interface PokemonsProps {
 export const Pokemons: React.FC<PokemonsProps> = () => {
   const ref = useRef<HTMLDivElement>(null);
   const pageRef = useRef<number>(0);
-  const pokemonsRef = useRef<any[]>([]);
 
-  const [pokemons, setPokemons] = useState<any[]>([]);
+  const dispatch: AppDispatch = useDispatch();
+
+  const pokemons = useSelector(selectors.pokemons.selectPokemons);
+
+  const [selectedPokemon, setSelectedPokemon] = useState<IPokemon>(null);
+
+  const fetchPokemons = async (page: number) => {
+    await dispatch(thunks.pokemons.fetchPokemons({ page }));
+  };
 
   const getPokemons = async (page: number) => {
-    const newPokemons = await getApiPokemons(page);
-
-    setPokemons([...pokemonsRef.current, ...newPokemons]);
-    pokemonsRef.current = [...pokemonsRef.current, ...newPokemons];
+    fetchPokemons(page);
   };
 
   useEffect(() => {
@@ -35,28 +43,34 @@ export const Pokemons: React.FC<PokemonsProps> = () => {
     return () => {
       if (ref.current) observer.unobserve(ref.current);
     };
-  }, []);
+  });
 
   return (
     <div>
-      {pokemons?.length
-        ? pokemons?.map((pokemon) => (
-            <div key={pokemon.id}>
-              <div
-                key={pokemon.id}
-                style={{
-                  height: '40px',
-                  border: '1px solid black',
-                }}
-              >
-                {/* <img src={pokemon.image} alt={pokemon.name} /> */}
-                <img src={pokemon.miniImage} alt={pokemon.name} />
-                {pokemon.name}
+      <S.Pokemons>
+        {pokemons?.length
+          ? pokemons?.map((pokemon: IPokemon) => (
+              <div key={pokemon.id}>
+                <S.MiniPokemon
+                  key={pokemon.id}
+                  onClick={() => setSelectedPokemon(pokemon)}
+                >
+                  {/* <img src={pokemon.image} alt={pokemon.name} /> */}
+                  <img src={pokemon.miniImage} alt={pokemon.name} />
+                  {pokemon.name}
+                </S.MiniPokemon>
               </div>
-            </div>
-          ))
-        : null}
-      <div ref={ref}>load more</div>
+            ))
+          : null}
+        {!pokemons || pokemons?.length <= globalConstants.maxPokemons ? (
+          <div ref={ref}>load more</div>
+        ) : null}
+      </S.Pokemons>
+      <S.PokemonBlock>
+        {selectedPokemon && (
+          <img src={selectedPokemon.image} alt={selectedPokemon.name} />
+        )}
+      </S.PokemonBlock>
     </div>
   );
 };

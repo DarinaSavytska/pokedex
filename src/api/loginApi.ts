@@ -1,7 +1,8 @@
+import { globalConstants } from '../constants';
+
 export const getLoginApi = async (password: string) => {
   try {
-    const res = await fetch('https://pokedex-back-cyan.vercel.app/api/login', {
-      // const res = await fetch('http://localhost:3000/api/login', {
+    const res = await fetch(`${globalConstants.mainUrl}/api/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
